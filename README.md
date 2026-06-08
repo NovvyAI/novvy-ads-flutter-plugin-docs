@@ -230,7 +230,7 @@ NovvyAds.setUserProfile(NovvyUserProfile(
   userId:      'your-stable-user-id',
   hashedEmail: NovvyAds.hashEmail('user@example.com'),
   isPaidUser:  true,
-  age:         1, // age bucket code — see table below (1 = 15–18)
+  age:         1, // age bucket code defined by your host app — see table below
 ));
 
 // Merge individual fields (null fields preserve existing values):
@@ -242,19 +242,21 @@ NovvyAds.updateUserProfile(NovvyUserProfile(isPaidUser: false));
 | `userId` | `String?` | `user.user_id` | Your publisher-side stable user ID |
 | `hashedEmail` | `String?` | `user.hashed_email` | SHA-256 hash — always use `NovvyAds.hashEmail(rawEmail)` |
 | `isPaidUser` | `bool?` | `user.is_paid_user` | `true` if user has an active paid subscription |
-| `age` | `int?` | `user.age` | **Age bucket code, not a literal age.** e.g. `0` = under 15, `1` = 15–18, … (see full mapping below) |
+| `age` | `int?` | `user.age` | **Age bucket code, not a literal age.** The bucket scheme is defined by your host app — see below |
 
 > **Privacy:** `NovvyAds.hashEmail(email)` trims, lowercases, and SHA-256 hashes the input. Never pass a raw email address.
 
-**Age field — bucket code, not a literal age.** `age` is a bucket code, not the user's age in years. Pass the code corresponding to the user's age range:
+**Age field — bucket code, not a literal age.** The `age` field is an opaque integer bucket code, **not** the user's age in years. Neither this plugin nor the Novvy SDK ships a predefined enum — the bucket scheme (what each integer means) is **defined by your host app**.
 
-| Code | Age range                                          |
-|------|----------------------------------------------------|
-| `0`  | Under 15                                           |
-| `1`  | 15–18                                              |
-| …    | _(TBD — confirm full mapping with the SDK team)_   |
+For example, your team might decide:
 
-> The actual code to send is **decided by the host app**, not by the plugin. The plugin forwards the integer as-is — it does **not** derive the bucket from a literal age, nor validate the value. The host app is responsible for mapping its known user age to the correct code per the SDK's bucket scheme.
+| Code | Meaning (illustrative only) |
+|------|-----------------------------|
+| `0`  | Under 15                    |
+| `1`  | 15–18                       |
+| …    | …                           |
+
+> The values above are **examples only** — use whatever scheme your app team has agreed on. The plugin forwards the integer as-is to the underlying SDK; it does **not** derive the code from a literal age, validate the value, or interpret what the code means.
 
 #### Content context
 
@@ -525,7 +527,7 @@ All fields are optional. Use `setUserProfile` to replace the entire profile; use
 | `userId` | `String?` | null clears | null preserves | Your publisher-side stable user identifier |
 | `hashedEmail` | `String?` | null clears | null preserves | SHA-256 hashed email — always use `NovvyAds.hashEmail(...)` |
 | `isPaidUser` | `bool?` | null clears | null preserves | Whether the user has an active paid subscription |
-| `age` | `int?` | null clears | null preserves | Age bucket code (not literal age) — see [User profile](#user-profile) for the mapping |
+| `age` | `int?` | null clears | null preserves | Age bucket code (defined by host app, not literal age) — see [User profile](#user-profile) |
 
 ### `NovvyContentContext`
 
