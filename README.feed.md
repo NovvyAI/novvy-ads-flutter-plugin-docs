@@ -26,8 +26,10 @@ Playback is **visibility-driven**: you call `setPlaying(true/false)` as the item
 
 ```yaml
 dependencies:
-  novvy_ads: ^1.0.0-beta.41
+  novvy_ads: 1.0.0-beta.41
 ```
+
+> While the plugin is in pre-release, pin the exact version. Pub's caret syntax (`^1.0.0-beta.x`) does not select pre-release versions by default. Switch to `^1.0.0` once a stable 1.x is published.
 
 ```bash
 flutter pub get
@@ -106,9 +108,19 @@ Open `ios/Runner/Info.plist` and add both keys inside the root `<dict>`:
 
 > iOS **aborts the process at launch** if any ATT-backed API is called without `NSUserTrackingUsageDescription`. Customize the string to match your app's tone.
 
-#### Exclude x86\_64 for simulator builds
+#### Configure Podfile
 
-The NovvyAds xcframework only ships `arm64` slices. Add the following to your `ios/Podfile` to prevent Intel-slice link errors:
+The plugin transitively depends on **Google-Mobile-Ads-SDK 12.x**, which ships as a static binary. Default `use_frameworks!` (dynamic) is incompatible with static transitive dependencies — switch the linkage to `:static`:
+
+```ruby
+target 'Runner' do
+  use_frameworks! :linkage => :static    # ← was: use_frameworks!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end
+```
+
+Additionally, `NovvyAds.xcframework` only ships `arm64` simulator slices. Exclude `x86_64` from simulator builds:
 
 ```ruby
 post_install do |installer|
