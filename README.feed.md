@@ -29,8 +29,6 @@ dependencies:
   novvy_ads: 1.0.0-beta.41
 ```
 
-> While the plugin is in pre-release, pin the exact version. Pub's caret syntax (`^1.0.0-beta.x`) does not select pre-release versions by default. Switch to `^1.0.0` once a stable 1.x is published.
-
 ```bash
 flutter pub get
 ```
