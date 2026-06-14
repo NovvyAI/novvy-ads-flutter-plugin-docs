@@ -23,7 +23,7 @@ The Flutter plugin for the Novvy Ads SDK.
 
 ```yaml
 dependencies:
-  novvy_ads: 1.0.0-beta.43
+  novvy_ads: 1.0.0-beta.44
 ```
 
 ```bash
